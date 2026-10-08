@@ -36,7 +36,7 @@ export default function App() {
   const save=useCallback(()=>{try{localStorage.setItem(STORAGE_KEY,serialize(stateRef.current));}catch{setStorageError(true);}},[]);
   useEffect(()=>{save();},[s.settings,save]);
   useEffect(()=>{const id=setInterval(save,5000);window.addEventListener('pagehide',save);return()=>{clearInterval(id);window.removeEventListener('pagehide',save);};},[save]);
-  useEffect(()=>{document.documentElement.lang=cfg.language;},[cfg.language]);
+  useEffect(()=>{document.documentElement.lang='en';},[]);
   const back=()=>{if(editor){setEditor(null);return;}go(screen==='language'?'general':['spa','temperature','music','messages','settings','home'].includes(screen)?'home':'settings');};
   const title=editor?(editor.kind==='clock'?'Time':editor.kind==='sleep'?'Sleep':editor.kind.startsWith('filter')?'Filter Cycles':'Light Cycles'):screen==='settings'?'Settings':screen==='language'?'Language':menus.find(m=>m[0]===screen)?.[1]||screen;
   const settingsLayout=!['home','temperature','spa','music','messages'].includes(screen);
@@ -51,8 +51,8 @@ export default function App() {
   };
   const reset=()=>{dispatch({type:'reset'});setScreen('home');setEditor(null);setSleeping(false);setLockPrompt(null);setWakePrompt(false);setSpeed(1);setPaused(false);activity();};
   return <UIContext.Provider value={{s,dispatch,go,edit,t,patch}}><main className="workspace">
-    <header className="site-heading"><div><span className="eyebrow">BALBOA · CONTROL PANEL SIMULATOR</span><h1>SpaTouch <b>4</b><span>Rev. A</span></h1></div><span className="local-tag"><i/> Simulación local</span></header>
-    <div className="device-shell"><div className="panel-host" ref={host} style={{height:480*scale}}><div className="panel" data-screen={screen} style={{transform:`scale(${scale}) ${cfg.inverted?'translate(800px,480px) rotate(180deg)':''}`,filter:`brightness(${.3+cfg.brightness*.007})`}} onPointerDownCapture={e=>{
+    <header className="site-heading"><div><span className="eyebrow">BALBOA · CONTROL PANEL SIMULATOR</span><h1>SpaTouch <b>4</b><span>Rev. A</span></h1></div><span className="local-tag"><i/> Browser simulation</span></header>
+    <div className="device-shell"><div className="panel-host" ref={host} style={{height:480*scale}}><div className="panel" lang={cfg.language} data-screen={screen} style={{transform:`scale(${scale}) ${cfg.inverted?'translate(800px,480px) rotate(180deg)':''}`,filter:`brightness(${.3+cfg.brightness*.007})`}} onPointerDownCapture={e=>{
       activity();
       if(cfg.panelLocked&&!sleeping&&!lockPrompt&&!(e.target as HTMLElement).closest('.unlock-overlay')){e.preventDefault();e.stopPropagation();setUnlockStep(0);setLockPrompt('panel');}
     }} onPointerMoveCapture={e=>{if(e.buttons===1)activity();}} onWheelCapture={activity} onKeyDownCapture={e=>{activity();if(cfg.panelLocked&&!lockPrompt){e.preventDefault();e.stopPropagation();setLockPrompt('panel');setUnlockStep(0);}}}>
@@ -79,9 +79,9 @@ export default function App() {
         {lockPrompt&&<button className="corner-back" aria-label={t('Cancel')} onClick={()=>setLockPrompt(null)}><Icon name="close"/></button>}
       </div>}
     </div></div><div className="device-brand"><span>BALBOA</span><span>SPA TOUCH 4™</span></div></div>
-    <div className="gesture-help"><span>↕</span> Clic izquierdo + arrastrar para deslizar <span>·</span> Tocá el dial para ajustar la temperatura</div>
+    <div className="gesture-help"><span>↕</span> Hold the left mouse button and drag to swipe <span>·</span> Tap the dial to adjust the temperature</div>
     <SimulatorTools s={s} dispatch={dispatch} speed={speed} setSpeed={setSpeed} paused={paused} setPaused={setPaused} reset={reset} wake={()=>{setSleeping(false);setWakePrompt(false);activity();}} navigate={to=>{setScreen(to);setEditor(null);activity();}}/>
-    {storageError&&<p className="storage-warning">El navegador no permite guardar ajustes. La simulación sigue funcionando durante esta sesión.</p>}
-    <footer className="site-footer"><span>Documento 42410 · Rev. A · MVP Release</span><span>Simulador independiente · Sin conexión a hardware</span></footer>
+    {storageError&&<p className="storage-warning">Your browser cannot save settings. The simulation will continue for this session.</p>}
+    <footer className="site-footer"><span>Document 42410 · Rev. A · MVP Release</span><span>Independent simulator · No hardware connection</span></footer>
   </main></UIContext.Provider>;
 }

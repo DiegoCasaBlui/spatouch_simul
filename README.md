@@ -40,7 +40,7 @@ La interfaz inicia en inglés. `Settings → General → Language` permite elegi
 
 ## Simulación
 
-El desplegable **Simulación**, fuera del panel, permite pausar, acelerar 1×/10×/60×, avanzar tiempo, modificar el agua, configurar accesorios, iniciar/finalizar Priming, cambiar la conexión ficticia, despertar, quitar bloqueos o restablecer.
+El desplegable **Simulation**, fuera del panel, permite pausar, acelerar 1×/10×/60×, avanzar tiempo, modificar el agua, configurar accesorios, iniciar/finalizar Priming, cambiar la conexión ficticia, despertar, quitar bloqueos o restablecer.
 
 - Perfil inicial: dos bombas de una velocidad, circulación, bba 3, Chromazone, Clim8zone, ozono y M8 disponibles.
 - Inicio a las 12:00, agua a 90 °F y consigna a 100 °F. La hora inicialmente no está confirmada: aparece el mensaje 40 hasta guardarla. Los horarios automáticos quedan pendientes de ese paso.
@@ -52,7 +52,7 @@ El desplegable **Simulación**, fuera del panel, permite pausar, acelerar 1×/10
 
 ## Fidelidad y aproximaciones
 
-La sección **Referencia y alcance** contiene la matriz completa por función y página. No se utilizaron pantallas ni documentación de otras revisiones.
+La sección **Reference and scope** contiene la matriz completa por función y página. No se utilizaron pantallas ni documentación de otras revisiones.
 
 Las pantallas documentadas se reconstruyen con HTML, CSS y SVG. La textura procede de una zona sin controles de una captura de la página 6 del PDF. Las tipografías e iconos son aproximaciones visuales; no se ejecuta ni se incluye firmware Balboa.
 
