@@ -3,7 +3,7 @@ import { HeatModeSymbol, Icon } from './icons';
 import type { Action, Settings, SpaState } from './model';
 export type Editor = { kind: 'clock' | 'filter-start' | 'filter-end' | 'light-start' | 'light-end' | 'sleep'; index?: number; returnTo: string };
 export const menus = [
-  ['general','General','settings'],['audio','Audio','audio'],['connections','Connections','wifi'],['heat','Heat Mode','heat'],
+  ['general','General','settings'],['connections','Connections','wifi'],['heat','Heat Mode','heat'],
   ['clim','Clim8zone','heat'],['lightcycles','Light Cycles','sun'],['chroma','CHROMAZON3','sun'],['filters','Filter Cycles','filter'],
   ['hold','Hold','hold'],['cleanup','Cleanup Cycle','clean'],['sleep','Sleep','moon'],['security','Security','lock'],
   ['diagnostics','Diagnostics','search'],['update','Software Update','download'],['about','About','info'],
@@ -24,7 +24,7 @@ const es: Record<string,string> = {
   'Exit Hold':'Salir de pausa','Start Hold':'Iniciar pausa','Start Cleanup':'Iniciar limpieza','Stop Cleanup':'Detener limpieza','No active cycle':'Sin ciclo activo',
   'Install demo update':'Instalar actualización demo','Up to date':'Actualizado','Demo update available':'Actualización demo disponible',
   'Updating…':'Actualizando…','Priming…':'Cebado…','Exit Priming':'Finalizar cebado','Circulation':'Circulación','Blower':'Soplador','Pump':'Bomba',
-  'Light scheduling':'Programación de luz','Check water':'Revisar agua','Dismiss':'Descartar','Music':'Música','Messages':'Mensajes','Brightness':'Brillo',
+  'Light scheduling':'Programación de luz','Check water':'Revisar agua','Dismiss':'Descartar','Messages':'Mensajes','Brightness':'Brillo',
   'Save':'Guardar','Cancel':'Cancelar','Back':'Volver','Home':'Inicio','Set Temperature':'Temperatura deseada','Filter':'Filtro',
 };
 type UI = { s: SpaState; dispatch: Dispatch<Action>; go: (screen: string) => void; edit: (e: Editor) => void; t: (v:string) => string; patch: (p:Partial<Settings>) => void };

@@ -2,7 +2,7 @@ export type Units = 'F' | 'C';
 export type HeatMode = 'Ready' | 'Rest';
 export type Range = 'High' | 'Low';
 export type Cycle = { enabled: boolean; start: number; end: number };
-export type Capabilities = { pumps: number; speeds: 1 | 2; blower: boolean; circulation: boolean; audio: boolean; chromazone: boolean; clim8zone: boolean; ozone: boolean; m8: boolean };
+export type Capabilities = { pumps: number; speeds: 1 | 2; blower: boolean; circulation: boolean; chromazone: boolean; clim8zone: boolean; ozone: boolean; m8: boolean };
 export type Settings = {
   units: Units; language: 'en' | 'es'; format24: boolean; timeSet: boolean;
   targetC: number; range: Range; heatMode: HeatMode; m8: boolean;
@@ -10,7 +10,7 @@ export type Settings = {
   sleepAfter: number; tapToWake: boolean; panelLocked: boolean; settingsLocked: boolean;
   filters: [Cycle, Cycle]; lightCycle: Cycle; cleanupMinutes: number;
   lightOn: boolean; color: string; lightIntensity: number;
-  volume: number; muted: boolean; climMode: 'Off' | 'Heat' | 'Auto';
+  climMode: 'Off' | 'Heat' | 'Auto';
   capabilities: Capabilities;
 };
 export type SpaState = {
@@ -18,14 +18,9 @@ export type SpaState = {
   manualPumps: number[]; blowerOn: boolean; primeCirculation: boolean; priming: boolean;
   startup: boolean; sampleSeconds: number; lastSample: number | null; sampledC: number | null;
   holdUntil: number; cleanupUntil: number; cleanupDue: number | null;
-  playing: boolean; track: number; trackSeconds: number; connection: 'Offline' | 'Local' | 'Cloud';
+  connection: 'Offline' | 'Local' | 'Cloud';
   updating: number; updateInstalled: boolean; reminderDismissed: boolean;
 };
-export const TRACKS = [
-  { title: 'White Christmas', artist: 'Bing Crosby', duration: 180 },
-  { title: 'Water Garden', artist: 'Spa sessions · Demo', duration: 240 },
-  { title: 'Evening Blue', artist: 'Spa sessions · Demo', duration: 210 },
-];
 export const STORAGE_KEY = 'spatouch4-rev-a-v1';
 export const toC = (n: number, units: Units) => units === 'C' ? n : (n - 32) * 5 / 9;
 export const fromC = (n: number, units: Units) => units === 'C' ? n : n * 9 / 5 + 32;
@@ -47,14 +42,14 @@ export function defaults(): Settings {
     sleepAfter: 60, tapToWake: false, panelLocked: false, settingsLocked: false,
     filters: [{ enabled: true, start: 270, end: 570 }, { enabled: false, start: 990, end: 1290 }],
     lightCycle: { enabled: false, start: 1080, end: 1320 }, cleanupMinutes: 30,
-    lightOn: false, color: '#39baf2', lightIntensity: 80, volume: 50, muted: false, climMode: 'Off',
-    capabilities: { pumps: 2, speeds: 1, blower: false, circulation: true, audio: true, chromazone: true, clim8zone: true, ozone: true, m8: true },
+    lightOn: false, color: '#39baf2', lightIntensity: 80, climMode: 'Off',
+    capabilities: { pumps: 2, speeds: 1, blower: false, circulation: true, chromazone: true, clim8zone: true, ozone: true, m8: true },
   };
 }
 export function initialState(settings = defaults(), clock = 12 * 3600): SpaState {
   return { settings: normalizeSettings(settings), clock, waterC: toC(90, 'F'), ambientC: 22, manualPumps: [0, 0], blowerOn: false,
     primeCirculation: false, priming: false, startup: true, sampleSeconds: 0, lastSample: null, sampledC: null,
-    holdUntil: 0, cleanupUntil: 0, cleanupDue: null, playing: false, track: 0, trackSeconds: 0,
+    holdUntil: 0, cleanupUntil: 0, cleanupDue: null,
     connection: 'Offline', updating: 0, updateInstalled: false, reminderDismissed: false };
 }
 export function inCycle(c: Cycle, seconds: number): boolean {
@@ -104,10 +99,6 @@ export function advance(state: SpaState, seconds: number): SpaState {
     } else s.sampleSeconds = 0;
     if (s.cleanupDue !== null && s.clock >= s.cleanupDue) {
       s.cleanupUntil = s.clock + s.settings.cleanupMinutes * 60; s.cleanupDue = null;
-    }
-    if (s.playing && s.settings.capabilities.audio) {
-      s.trackSeconds += dt;
-      if (s.trackSeconds >= TRACKS[s.track].duration) { s.trackSeconds = 0; s.track = (s.track + 1) % TRACKS.length; }
     }
     if (s.updating > 0) { s.updating = Math.max(0, s.updating - dt); if (!s.updating) s.updateInstalled = true; }
     elapsed += dt;
@@ -167,7 +158,7 @@ export function restore(raw: string | null): SpaState {
     if (n.filters.length !== 2 || cycles.length !== 3 || cycles.some(c => !c || typeof c.enabled !== 'boolean' || !Number.isInteger(c.start) || !Number.isInteger(c.end) || c.start < 0 || c.start > 1439 || c.end < 0 || c.end > 1439)) return initialState();
     if (!n.capabilities || !Number.isInteger(n.capabilities.pumps) || n.capabilities.pumps < 1 || n.capabilities.pumps > 8 || ![1,2].includes(n.capabilities.speeds)) return initialState();
     if (Object.keys(d.capabilities).some(k => typeof n.capabilities[k] !== typeof d.capabilities[k as keyof Capabilities])) return initialState();
-    if (['targetC','brightness','sleepAfter','cleanupMinutes','lightIntensity','volume'].some(k => !Number.isFinite(n[k]))) return initialState();
+    if (['targetC','brightness','sleepAfter','cleanupMinutes','lightIntensity'].some(k => !Number.isFinite(n[k]))) return initialState();
     if (!/^#[0-9a-f]{6}$/i.test(n.color) || !['Off','Heat','Auto'].includes(n.climMode)) return initialState();
     return initialState(normalizeSettings({ ...d, ...n, brightness: clamp(n.brightness, 15, 100), sleepAfter: clamp(n.sleepAfter, 10, 600), cleanupMinutes: clamp(n.cleanupMinutes, 0, 120), filters: [{ ...n.filters[0], enabled: true }, n.filters[1]] }), clamp(p.clock, 0, 86399));
   } catch { return initialState(); }

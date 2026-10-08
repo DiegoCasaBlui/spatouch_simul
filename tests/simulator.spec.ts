@@ -32,7 +32,7 @@ test('settings drag, time cancel/save and language persist',async({page})=>{
 test('dragging the menu does not activate rows and all settings open',async({page})=>{
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await settings(page);await swipe(page,'.settings-list',0,-190);await expect(page.locator('.panel')).toHaveAttribute('data-screen','settings');
-  const names=['General','Audio','Connections','Heat Mode','Clim8zone','Light Cycles','CHROMAZON3','Filter Cycles','Hold','Cleanup Cycle','Sleep','Security','Diagnostics','Software Update','About'];
+  const names=['General','Connections','Heat Mode','Clim8zone','Light Cycles','CHROMAZON3','Filter Cycles','Hold','Cleanup Cycle','Sleep','Security','Diagnostics','Software Update','About'];
   for(const name of names){await menu(page,name);await expect(page.locator('.settings-header h2')).toHaveText(name);await page.getByRole('button',{name:'Back',exact:true}).click();}
   await menu(page,'General');await page.screenshot({path:'test-results/general.png'});expect(errors).toEqual([]);
 });
@@ -52,10 +52,40 @@ test('devices, single-speed pumps, circulation and Priming',async({page})=>{
   await tools(page);await page.getByRole('button',{name:'Start Priming',exact:true}).click();await expect(page.getByRole('button',{name:'Circulation: 0',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Circulation: 0',exact:true}).click();await expect(page.getByRole('button',{name:'Circulation: 1',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Exit Priming',exact:true}).click();await swipe(page,'[aria-label="Return Home gesture"]',0,100);await expect(page.locator('.panel')).toHaveAttribute('data-screen','home');
 });
-test('lights distinguish click from swipe, audio changes tracks',async({page})=>{
+test('lights distinguish click from swipe',async({page})=>{
   await page.getByRole('button',{name:'Light',exact:true}).click();await swipe(page,'[aria-label="Lights gesture"]',90,0);await expect(page.locator('.panel')).toHaveAttribute('data-screen','chroma');await expect(page.getByRole('group',{name:'Light',exact:true}).getByRole('button',{name:'On',exact:true})).toHaveAttribute('aria-pressed','true');
-  await page.getByRole('button',{name:'Color #f25192'}).click();await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Home',exact:true}).click();await page.getByRole('button',{name:'Next track',exact:true}).click();await expect(page.locator('.music-handle strong')).toHaveText('Water Garden');
-  await swipe(page,'[aria-label="Music gesture"]',0,-110);await expect(page.locator('.panel')).toHaveAttribute('data-screen','music');await page.getByRole('button',{name:'Play',exact:true}).click();await expect(page.locator('.record')).toHaveClass(/playing/);
+  await page.getByRole('button',{name:'Color #f25192'}).click();await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Home',exact:true}).click();
+});
+
+test('Home heat mode toggles, persists and stays in sync with Settings',async({page})=>{
+  const mode=page.locator('.heat-mode-status');
+  await expect(mode).toHaveAccessibleName('Heat Mode: Ready');
+  await mode.click();await expect(mode).toHaveAccessibleName('Heat Mode: Rest');
+  await expect(mode.locator('.resting')).toHaveText('IR');
+  await page.locator('.panel-host').screenshot({path:'test-results/home-rest.png'});
+  await page.reload();await expect(mode).toHaveAccessibleName('Heat Mode: Rest');
+  await settings(page);await menu(page,'Heat Mode');
+  await expect(page.getByRole('button',{name:'Rest',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.locator('.panel-host').screenshot({path:'test-results/heat-rest.png'});
+  await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Home',exact:true}).click();
+  await page.getByRole('button',{name:'Invert display'}).click();
+  await mode.click();await expect(mode).toHaveAccessibleName('Heat Mode: Ready');
+  await page.getByRole('button',{name:'Invert display'}).click();
+  await settings(page);await menu(page,'Security');
+  await page.getByRole('group',{name:'Settings Lock'}).getByRole('button',{name:'On',exact:true}).click();
+  await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Home',exact:true}).click();
+  await mode.click();await expect(page.locator('.lock-overlay')).toBeVisible();await expect(mode).toHaveAttribute('aria-label','Heat Mode: Ready');
+});
+
+test('saved audio configuration cannot restore the removed music player',async({page})=>{
+  await page.evaluate(()=>{
+    const key='spatouch4-rev-a-v1';const saved=JSON.parse(localStorage.getItem(key)!);
+    saved.settings.capabilities.audio=true;saved.settings.volume=50;saved.settings.muted=false;
+    localStorage.setItem(key,JSON.stringify(saved));
+  });
+  await page.reload();await expect(page.locator('.music-bar, .music-screen')).toHaveCount(0);
+  await settings(page);await expect(page.getByRole('button',{name:'Audio',exact:true})).toHaveCount(0);
+  await tools(page);await expect(page.getByRole('checkbox',{name:'Audio bba 3'})).toHaveCount(0);
 });
 test('sleep uses real time and requires 1 then 2',async({page})=>{
   await page.clock.install();await settings(page);await menu(page,'Sleep');await page.getByRole('button',{name:'1 min',exact:true}).click();await page.getByRole('spinbutton',{name:'Sleep duration'}).focus();await page.keyboard.press('ArrowUp');await page.keyboard.press('ArrowUp');await page.keyboard.press('ArrowUp');await page.getByRole('button',{name:'Save',exact:true}).click();

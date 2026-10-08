@@ -29,7 +29,6 @@ La pantalla conserva las coordenadas **800 × 480** de las capturas y se escala 
 - Desde el engranaje superior hacia abajo: **Settings**.
 - Desde el icono lateral derecho hacia el centro (también admite arrastre hacia afuera): **Spa Devices**.
 - Desde el icono de luz izquierdo hacia la derecha: **Chromazone**. Un clic corto en la luz cambia encendido/apagado.
-- Desde el título de la pista hacia arriba: **Music**.
 - En Spa Devices, arrastrar desde la temperatura superior hacia abajo para volver a Home. Los cuatro equipos aparecen en una sola pantalla.
 - Arrastrar listas hacia arriba/abajo para desplazarlas; también funciona la rueda del mouse.
 - Tocar el dial para editar la consigna; usar +/− o arrastrar el arco. Tocar su centro vuelve a Home. El dial también admite flechas y Home/End con el teclado.
@@ -63,7 +62,7 @@ El documento enumera funciones sin explicar sus pantallas. Por acuerdo, se imple
 | Modelo térmico | 2 °C/h de calentamiento; 4 °C/h con Clim8zone activo. Pérdida de 2,5 % por hora de la diferencia respecto a un ambiente de 22 °C. |
 | M8 | Muestreo de 30 minutos, ampliado a 60 cuando la diferencia con la consigna es menor a 0,5 °C. |
 | Clim8zone | Off, Heat y Auto; Heat/Auto cooperan con la demanda de calor, sin refrigeración inventada. |
-| Audio | Controles, metadatos y progreso; no incluye grabaciones ni reproduce sonido. “White Christmas / Bing Crosby” son los metadatos de la captura del manual. |
+| Audio | Reproductor y controles de audio retirados a pedido. |
 | Chromazone / Light Cycles | Encendido, siete colores, intensidad y un horario diario. El horario puede mantener la luz encendida aunque su control manual esté apagado. |
 | Hold | Pausa de 60 minutos que detiene salidas de bombas, blower y calentamiento. |
 | Cleanup Cycle | Duración de 0/15/30/60 min, inicio manual o 30 min después de apagar el último equipo manual. |

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 export function HeatModeSymbol({ rest = false }: { rest?: boolean }) {
-  return <span className={`heat-mode-symbol${rest ? ' resting' : ''}`} aria-hidden="true">R</span>;
+  return <span className={`heat-mode-symbol${rest ? ' resting' : ''}`} aria-hidden="true">{rest ? 'IR' : 'R'}</span>;
 }
 
 /** Filled vanes and six bubble trails follow the Rev. A pump artwork. */

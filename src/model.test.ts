@@ -51,8 +51,8 @@ describe('equipment and persistence',()=>{
     expect(s.cleanupDue).toBe(s.clock+1800);s=advance(s,1800);expect(status(s).cleanup).toBe(true);
   });
   it('saves settings and clock but restarts transient state',()=>{
-    let s=initialState({...defaults(),units:'C',timeSet:true});s={...s,priming:true,playing:true,connection:'Cloud',manualPumps:[2,1,0,0,0,0,0,0]};
-    const r=restore(serialize(s));expect(r.settings).toEqual(s.settings);expect(r.clock).toBe(s.clock);expect(r.priming).toBe(false);expect(r.playing).toBe(false);expect(r.manualPumps.every(n=>n===0)).toBe(true);expect(r.lastSample).toBeNull();
+    let s=initialState({...defaults(),units:'C',timeSet:true});s={...s,priming:true,connection:'Cloud',manualPumps:[2,1,0,0,0,0,0,0]};
+    const r=restore(serialize(s));expect(r.settings).toEqual(s.settings);expect(r.clock).toBe(s.clock);expect(r.priming).toBe(false);expect(r.manualPumps.every(n=>n===0)).toBe(true);expect(r.lastSample).toBeNull();
   });
   it('migrates the old equipment profile without losing user settings',()=>{
     const old=initialState({...defaults(),language:'es',brightness:45});
