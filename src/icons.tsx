@@ -1,4 +1,34 @@
 import type { CSSProperties } from 'react';
+export function HeatModeSymbol({ rest = false }: { rest?: boolean }) {
+  return <span className={`heat-mode-symbol${rest ? ' resting' : ''}`} aria-hidden="true">R</span>;
+}
+
+/** Filled vanes and six bubble trails follow the Rev. A pump artwork. */
+export function DeviceSymbol({ kind, number, running }: { kind: 'pump' | 'circulation' | 'light'; number?: string; running: boolean }) {
+  const bubbles = [[83,19,1.5],[89,20,1.7],[96,23,2],[79,24,1.7],[86,26,2.2],[94,29,2.4],[103,30,2],[84,33,2.7],[92,37,3.1],[102,38,2.3],[89,44,3.6],[100,46,3],[98,55,4.1]];
+  return <svg className={`device-art ${running ? 'is-running' : ''}`} viewBox="0 0 160 160" aria-hidden="true">
+    <circle cx="80" cy="80" r="77" fill="#080e11" stroke="#14232b" strokeWidth="3"/>
+    <circle cx="80" cy="80" r="73" fill="#111516" stroke="#202426" strokeWidth="3"/>
+    <circle cx="80" cy="80" r="68" fill="none" stroke="currentColor" strokeWidth="2"/>
+    {kind === 'pump' ? <>
+      <g className={running ? 'pump-vane-motion' : ''}>
+        {Array.from({ length: 6 }, (_, i) => <g key={i} transform={`rotate(${i * 60} 80 80)`}>
+          <path d="M74 56 L69 45 Q79 43 85 51 L91 63 L81 66 Z" fill="currentColor"/>
+          {bubbles.map(([cx,cy,r],j) => <circle key={j} cx={cx} cy={cy} r={r} fill="currentColor" opacity={.4+j*.045}/>)}
+        </g>)}
+      </g>
+      <circle cx="80" cy="80" r="23" fill={running ? '#319fbd' : '#22697e'} stroke="#000b12" strokeWidth="3"/>
+      <text x="80" y="80" dy=".36em" textAnchor="middle" fill="#dcf6ff" fontFamily="Arial, sans-serif" fontSize="30">{number}</text>
+    </> : kind === 'circulation' ? <g className={running ? 'pump-vane-motion' : ''}>
+      <circle cx="80" cy="80" r="32" fill="none" stroke="currentColor" strokeWidth="3"/>
+      <circle cx="80" cy="80" r="22" fill="none" stroke="currentColor" strokeWidth="3"/>
+      {Array.from({length:16},(_,i)=><path key={i} d="M80 47 L88 35" transform={`rotate(${i*22.5} 80 80)`} fill="none" stroke="currentColor" strokeWidth="3"/>)}
+    </g> : <g stroke="currentColor" strokeWidth="3" fill="none">
+      <circle cx="80" cy="80" r="22"/>
+      {Array.from({length:12},(_,i)=><path key={i} d="M80 45 V31" transform={`rotate(${i*30} 80 80)`}/>)}
+    </g>}
+  </svg>;
+}
 export function Icon({ name, size = 28, style }: { name: string; size?: number; style?: CSSProperties }) {
   const paths: Record<string, React.ReactNode> = {
     settings: <><path d="m10 3 1-2h2l1 2 3 1 2-1 2 2-1 2 1 3 2 1v2l-2 1-1 3 1 2-2 2-2-1-3 1-1 2h-2l-1-2-3-1-2 1-2-2 1-2-1-3-2-1v-2l2-1 1-3-1-2 2-2 2 1z"/><circle cx="12" cy="12" r="4"/></>,

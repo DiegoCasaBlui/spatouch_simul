@@ -38,7 +38,7 @@ export function setTarget(settings: Settings, display: number): Settings {
 }
 export function normalizeSettings(s: Settings): Settings {
   const [lo, hi] = bounds(s.range, s.units);
-  return { ...s, targetC: clamp(s.targetC, toC(lo, s.units), toC(hi, s.units)) };
+  return { ...s, targetC: clamp(s.targetC, toC(lo, s.units), toC(hi, s.units)), capabilities: { ...s.capabilities, pumps: 2, speeds: 1, blower: false, circulation: true } };
 }
 export function defaults(): Settings {
   return {
@@ -48,11 +48,11 @@ export function defaults(): Settings {
     filters: [{ enabled: true, start: 270, end: 570 }, { enabled: false, start: 990, end: 1290 }],
     lightCycle: { enabled: false, start: 1080, end: 1320 }, cleanupMinutes: 30,
     lightOn: false, color: '#39baf2', lightIntensity: 80, volume: 50, muted: false, climMode: 'Off',
-    capabilities: { pumps: 8, speeds: 2, blower: true, circulation: true, audio: true, chromazone: true, clim8zone: true, ozone: true, m8: true },
+    capabilities: { pumps: 2, speeds: 1, blower: false, circulation: true, audio: true, chromazone: true, clim8zone: true, ozone: true, m8: true },
   };
 }
 export function initialState(settings = defaults(), clock = 12 * 3600): SpaState {
-  return { settings, clock, waterC: toC(90, 'F'), ambientC: 22, manualPumps: Array(8).fill(0), blowerOn: false,
+  return { settings: normalizeSettings(settings), clock, waterC: toC(90, 'F'), ambientC: 22, manualPumps: [0, 0], blowerOn: false,
     primeCirculation: false, priming: false, startup: true, sampleSeconds: 0, lastSample: null, sampledC: null,
     holdUntil: 0, cleanupUntil: 0, cleanupDue: null, playing: false, track: 0, trackSeconds: 0,
     connection: 'Offline', updating: 0, updateInstalled: false, reminderDismissed: false };
@@ -130,13 +130,13 @@ export function reducer(s: SpaState, action: Action): SpaState {
     case 'settings': return { ...s, settings: normalizeSettings({ ...s.settings, ...action.patch }) };
     case 'target': return { ...s, settings: setTarget(s.settings, action.value) };
     case 'pump': {
-      if (s.settings.panelLocked || status(s).hold) return s;
+      if (s.settings.panelLocked || status(s).hold || !Number.isInteger(action.index) || action.index < 0 || action.index >= s.settings.capabilities.pumps) return s;
       const manualPumps = [...s.manualPumps];
       manualPumps[action.index] = (manualPumps[action.index] + 1) % (s.settings.capabilities.speeds + 1);
       const allOff = !manualPumps.slice(0, s.settings.capabilities.pumps).some(Boolean) && !s.blowerOn;
       return { ...s, manualPumps, cleanupDue: allOff && s.settings.cleanupMinutes ? s.clock + 1800 : null };
     }
-    case 'blower': return s.settings.panelLocked || status(s).hold ? s : { ...s, blowerOn: !s.blowerOn,
+    case 'blower': return !s.settings.capabilities.blower || s.settings.panelLocked || status(s).hold ? s : { ...s, blowerOn: !s.blowerOn,
       cleanupDue: s.blowerOn && !s.manualPumps.some(Boolean) && s.settings.cleanupMinutes ? s.clock + 1800 : null };
     case 'clock': {
       const clock = Math.floor(s.clock / 86400) * 86400 + action.minute * 60;
@@ -148,7 +148,7 @@ export function reducer(s: SpaState, action: Action): SpaState {
         cleanupDue: s.cleanupDue === null ? null : s.cleanupDue + shift };
     }
     case 'prime': return { ...s, priming: action.on, startup: !action.on, sampleSeconds: 0, sampledC: null,
-      lastSample: null, primeCirculation: false, manualPumps: Array(8).fill(0), blowerOn: false, holdUntil: 0 };
+      lastSample: null, primeCirculation: false, manualPumps: [0, 0], blowerOn: false, holdUntil: 0 };
     case 'state': return { ...s, ...action.patch };
     case 'reset': return initialState();
   }

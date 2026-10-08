@@ -30,19 +30,19 @@ La pantalla conserva las coordenadas **800 × 480** de las capturas y se escala 
 - Desde el icono lateral derecho hacia el centro (también admite arrastre hacia afuera): **Spa Devices**.
 - Desde el icono de luz izquierdo hacia la derecha: **Chromazone**. Un clic corto en la luz cambia encendido/apagado.
 - Desde el título de la pista hacia arriba: **Music**.
-- En Spa Devices, arrastrar desde la temperatura superior hacia abajo para volver a Home. Los números inferiores y el área situada encima cambian de página.
+- En Spa Devices, arrastrar desde la temperatura superior hacia abajo para volver a Home. Los cuatro equipos aparecen en una sola pantalla.
 - Arrastrar listas hacia arriba/abajo para desplazarlas; también funciona la rueda del mouse.
 - Tocar el dial para editar la consigna; usar +/− o arrastrar el arco. Tocar su centro vuelve a Home. El dial también admite flechas y Home/End con el teclado.
 - En los selectores de hora y suspensión, arrastrar las columnas. ✓ guarda y × cancela. Salir del editor también descarta el borrador.
 - Al suspenderse la pantalla, tocarla y pulsar **1, luego 2**. Con `Tap to Wake` activado se despierta con un toque.
 
-La interfaz inicia en inglés. `Settings → General → Language` permite elegir español. Los rótulos abreviados R/ℝ, L/H y F°/C° conservan la presentación del manual.
+La interfaz inicia en inglés. `Settings → General → Language` permite elegir español. Los rótulos abreviados R y R girada 90°, L/H y F°/C° conservan la presentación del manual.
 
 ## Simulación
 
-El desplegable **Simulación**, fuera del panel, permite pausar, acelerar 1×/10×/60×, avanzar tiempo, modificar el agua, configurar equipos, iniciar/finalizar Priming, cambiar la conexión ficticia, despertar, quitar bloqueos o restablecer.
+El desplegable **Simulación**, fuera del panel, permite pausar, acelerar 1×/10×/60×, avanzar tiempo, modificar el agua, configurar accesorios, iniciar/finalizar Priming, cambiar la conexión ficticia, despertar, quitar bloqueos o restablecer.
 
-- Perfil inicial: ocho bombas de dos velocidades, blower, circulación, bba 3, Chromazone, Clim8zone, ozono y M8 disponibles.
+- Perfil inicial: dos bombas de una velocidad, circulación, bba 3, Chromazone, Clim8zone, ozono y M8 disponibles.
 - Inicio a las 12:00, agua a 90 °F y consigna a 100 °F. La hora inicialmente no está confirmada: aparece el mensaje 40 hasta guardarla. Los horarios automáticos quedan pendientes de ese paso.
 - Al arrancar se muestra `----` hasta completar 60 segundos continuos de circulación. Una lectura sin renovar caduca a los 60 minutos. El control de circulación es informativo salvo durante Priming.
 - Ready calienta según demanda. Rest calienta únicamente durante filtración. High y Low usan los límites publicados por el manual; cambiar unidades conserva la temperatura física y cambiar rango limita la consigna cuando hace falta.

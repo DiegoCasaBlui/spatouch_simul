@@ -40,19 +40,27 @@ describe('filter scheduling',()=>{
 });
 describe('equipment and persistence',()=>{
   it('cycles pump speeds and enables circulation control only during Priming',()=>{
-    let s=initialState();for(const value of [1,2,0]){s=reducer(s,{type:'pump',index:0});expect(s.manualPumps[0]).toBe(value);}
+    let s=initialState();for(const value of [1,0]){s=reducer(s,{type:'pump',index:0});expect(s.manualPumps[0]).toBe(value);}
     s=reducer(s,{type:'prime',on:true});expect(status(s).heating).toBe(false);expect(status(s).circulation).toBe(false);
     s=reducer(s,{type:'state',patch:{primeCirculation:true}});expect(status(s).circulation).toBe(true);
     s=reducer(s,{type:'prime',on:false});expect(s.startup).toBe(true);
   });
   it('Hold stops output and cleanup starts after the final manually used device stops',()=>{
     let s=initialState();s={...s,holdUntil:s.clock+3600};expect(status(s).flow).toBe(false);expect(reducer(s,{type:'pump',index:0}).manualPumps[0]).toBe(0);
-    s={...s,holdUntil:0,settings:{...s.settings,heatMode:'Rest'},startup:false};for(let i=0;i<3;i++)s=reducer(s,{type:'pump',index:0});
+    s={...s,holdUntil:0,settings:{...s.settings,heatMode:'Rest'},startup:false};for(let i=0;i<2;i++)s=reducer(s,{type:'pump',index:0});
     expect(s.cleanupDue).toBe(s.clock+1800);s=advance(s,1800);expect(status(s).cleanup).toBe(true);
   });
   it('saves settings and clock but restarts transient state',()=>{
     let s=initialState({...defaults(),units:'C',timeSet:true});s={...s,priming:true,playing:true,connection:'Cloud',manualPumps:[2,1,0,0,0,0,0,0]};
     const r=restore(serialize(s));expect(r.settings).toEqual(s.settings);expect(r.clock).toBe(s.clock);expect(r.priming).toBe(false);expect(r.playing).toBe(false);expect(r.manualPumps.every(n=>n===0)).toBe(true);expect(r.lastSample).toBeNull();
+  });
+  it('migrates the old equipment profile without losing user settings',()=>{
+    const old=initialState({...defaults(),language:'es',brightness:45});
+    old.settings.capabilities={...old.settings.capabilities,pumps:8,speeds:2,blower:true,circulation:false};
+    const restored=restore(serialize(old));
+    expect(restored.settings.capabilities).toMatchObject({pumps:2,speeds:1,blower:false,circulation:true});
+    expect(restored.settings.language).toBe('es');expect(restored.settings.brightness).toBe(45);
+    expect(restored.manualPumps).toEqual([0,0]);
   });
   it('recovers safely from broken or invalid browser storage',()=>{
     expect(restore('{')).toEqual(initialState());const p=JSON.parse(serialize(initialState()));p.settings.filters=[];expect(restore(JSON.stringify(p))).toEqual(initialState());

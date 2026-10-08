@@ -1,5 +1,5 @@
 import { createContext, useContext, useRef, type Dispatch, type ReactNode } from 'react';
-import { Icon } from './icons';
+import { HeatModeSymbol, Icon } from './icons';
 import type { Action, Settings, SpaState } from './model';
 export type Editor = { kind: 'clock' | 'filter-start' | 'filter-end' | 'light-start' | 'light-end' | 'sleep'; index?: number; returnTo: string };
 export const menus = [
@@ -33,7 +33,7 @@ export const useUI = () => useContext(UIContext);
 export const translate = (lang: string, text:string) => lang === 'es' ? es[text] || text : text;
 export function Row({ label, children }: { label: string; children: ReactNode }) { const {t} = useUI(); return <div className="setting-row"><span>{t(label)}</span><div>{children}</div></div>; }
 export function Toggle<T extends string | number>({ value, values, onChange, label }: { value: T; values: readonly T[]; onChange: (v:T)=>void; label: string }) {
-  const {t} = useUI(); return <div className="toggle" role="group" aria-label={t(label)}>{values.map(v => <button key={v} aria-label={t(String(v))} aria-pressed={value === v} className={value === v ? 'selected' : ''} onClick={() => onChange(v)}>{label==='Units'?`${v}°`:label==='Heat Mode'?(v==='Ready'?'R':'ℝ'):label==='Temperature range'?(v==='High'?'H':'L'):t(String(v))}</button>)}</div>;
+  const {t} = useUI(); return <div className="toggle" role="group" aria-label={t(label)}>{values.map(v => <button key={v} aria-label={t(String(v))} aria-pressed={value === v} className={value === v ? 'selected' : ''} onClick={() => onChange(v)}>{label==='Units'?`${v}°`:label==='Heat Mode'?<HeatModeSymbol rest={v==='Rest'}/>:label==='Temperature range'?(v==='High'?'H':'L'):t(String(v))}</button>)}</div>;
 }
 export function Switch({ value, onChange, label }: { value: boolean; onChange: (v:boolean)=>void; label: string }) { return <Toggle value={value ? 'On' : 'Off'} values={['Off','On']} label={label} onChange={v => onChange(v === 'On')}/>; }
 export function RangeSlider({ value, min=0, max=100, onChange, label }: { value: number; min?:number; max?:number; onChange: (v:number)=>void; label:string }) {

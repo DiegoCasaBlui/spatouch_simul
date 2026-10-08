@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DragScroll, SwipeZone } from './gestures';
-import { Icon } from './icons';
+import { DeviceSymbol, Icon } from './icons';
 import { clockText, cycleDuration, fromC, status, tempText, TRACKS, type Cycle, type Settings } from './model';
 import { menus, RangeSlider, RoundButton, Row, Switch, Toggle, useUI, Wheel, type Editor } from './ui';
 
@@ -62,17 +62,15 @@ export function ValueEditor({editor,close}:{editor:Editor;close:()=>void}) {
   </div><div className="editor-actions"><RoundButton icon="close" label="Cancel" onClick={close}/><RoundButton icon="check" label="Save" onClick={save}/></div></div>;
 }
 export function SpaDevices() {
-  const {s,dispatch,go,patch,t}=useUI(); const [page,setPage]=useState(0); const st=status(s);const cfg=s.settings;
-  const devices=[...Array.from({length:cfg.capabilities.pumps},(_,i)=>({id:`pump-${i}`,label:`${t('Pump')} ${i+1}`,level:st.pumps[i],icon:'pump',number:String(i+1),click:()=>dispatch({type:'pump',index:i}),disabled:st.hold})),
-    ...(cfg.capabilities.blower?[{id:'blower',label:t('Blower'),level:Number(st.blower),icon:'pump',number:'B',click:()=>dispatch({type:'blower'}),disabled:st.hold}]:[]),
-    ...(cfg.capabilities.circulation?[{id:'circ',label:t('Circulation'),level:Number(st.circulation),icon:'pump',number:'',click:()=>dispatch({type:'state',patch:{primeCirculation:!s.primeCirculation}}),disabled:!s.priming||st.hold}]:[]),
-    {id:'light',label:t('Light'),level:Number(st.light),icon:'sun',number:'',click:()=>patch({lightOn:!cfg.lightOn}),disabled:false}];
-  const pages=Math.ceil(devices.length/6);const safePage=Math.min(page,pages-1);
+  const {s,dispatch,go,patch,t}=useUI(); const st=status(s);const cfg=s.settings;
+  const devices = [
+    ...[0, 1].map(i => ({ id: `pump-${i}`, label: `${t('Pump')} ${i+1}`, level: st.pumps[i], kind: 'pump' as const, number: String(i+1), click: () => dispatch({type:'pump', index:i}), disabled: st.hold })),
+    { id: 'circ', label: t('Circulation'), level: Number(st.circulation), kind: 'circulation' as const, number: '', click: () => dispatch({type:'state',patch:{primeCirculation:!s.primeCirculation}}), disabled: !s.priming || st.hold },
+    { id: 'light', label: t('Light'), level: Number(st.light), kind: 'light' as const, number: '', click: () => patch({lightOn:!cfg.lightOn}), disabled: false },
+  ];
   return <><SwipeZone className="spa-return" inverted={cfg.inverted} label="Return Home gesture" onSwipe={d=>d==='down'&&go('home')}><button aria-label={t('Set Temperature')} onClick={()=>go('temperature')}>{st.validTemperature?tempText(s.sampledC!,cfg.units):'----'}</button></SwipeZone>
     {s.priming&&<div className="priming-label">{t('Priming…')}<button className="text-button" onClick={()=>dispatch({type:'prime',on:false})}>{t('Exit Priming')}</button></div>}
-    <div className="device-grid">{devices.slice(safePage*6,safePage*6+6).map(d=><button key={d.id} className={`spa-device ${d.level?'running':''}`} aria-label={`${d.label}: ${d.level}`} disabled={d.disabled} onClick={d.click}><div className={`device-rotor ${d.level?'spin':''}`} style={{animationDuration:d.level===2?'2s':'6s'}}><Icon name={d.icon} size={96}/></div>{d.number&&<span className="device-number">{d.number}</span>}<small>{d.label}{d.level?` · ${d.level}`:''}</small></button>)}</div>
-    <SwipeZone className="page-swipe" label="Device pages gesture" inverted={cfg.inverted} onSwipe={d=>{if(d==='left'||d==='right')setPage((safePage+(d==='left'?1:-1)+pages)%pages);}}/>
-    <div className="page-dots">{Array.from({length:pages},(_,i)=><button key={i} aria-label={`Device page ${i+1}`} aria-current={safePage===i?'page':undefined} className={safePage===i?'active':''} onClick={()=>setPage(i)}>{i+1}</button>)}</div>
+    <div className="device-grid four-devices">{devices.map(d=><button key={d.id} className={`spa-device ${d.level?'running':''}`} aria-label={`${d.label}: ${d.level}`} disabled={d.disabled} onClick={d.click}><DeviceSymbol kind={d.kind} number={d.number} running={!!d.level}/><small>{d.label}</small></button>)}</div>
     <SwipeZone className="side-handle left" inverted={cfg.inverted} label="Lights gesture" onSwipe={()=>go('chroma')}><Icon name="sun" size={34}/></SwipeZone>
   </>;
 }

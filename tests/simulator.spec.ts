@@ -41,10 +41,15 @@ test('filter draft, cycle two and midnight duration',async({page})=>{
   await page.getByRole('button',{name:'Start Time 1',exact:true}).click();await swipe(page,'[aria-label="Hours"]',0,-65);await page.getByRole('button',{name:'Save',exact:true}).click();await expect(page.getByRole('button',{name:'Start Time 1',exact:true})).toContainText('5:30');
   await page.screenshot({path:'test-results/filters.png'});
 });
-test('devices, paging, circulation and Priming',async({page})=>{
+test('devices, single-speed pumps, circulation and Priming',async({page})=>{
   await swipe(page,'[aria-label="Spa gesture"]',-90,0);await page.getByRole('button',{name:'Pump 1: 0',exact:true}).click();await expect(page.getByRole('button',{name:'Pump 1: 1',exact:true})).toBeVisible();
-  await page.getByRole('button',{name:'Device page 2'}).click();await expect(page.getByRole('button',{name:/^Circulation:/})).toBeDisabled();
-  await tools(page);await page.getByRole('button',{name:'Iniciar Priming',exact:true}).click();await page.getByRole('button',{name:'Device page 2'}).click();await expect(page.getByRole('button',{name:'Circulation: 0',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Circulation: 0',exact:true}).click();await expect(page.getByRole('button',{name:'Circulation: 1',exact:true})).toBeVisible();
+  await expect(page.locator('.spa-device')).toHaveCount(4);
+  await expect(page.getByRole('button',{name:'Device page 2'})).toHaveCount(0);
+  await page.screenshot({path:'test-results/devices-updated.png'});
+  await page.getByRole('button',{name:'Pump 1: 1',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Pump 1: 0',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:/^Circulation:/})).toBeDisabled();
+  await tools(page);await page.getByRole('button',{name:'Iniciar Priming',exact:true}).click();await expect(page.getByRole('button',{name:'Circulation: 0',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Circulation: 0',exact:true}).click();await expect(page.getByRole('button',{name:'Circulation: 1',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Exit Priming',exact:true}).click();await swipe(page,'[aria-label="Return Home gesture"]',0,100);await expect(page.locator('.panel')).toHaveAttribute('data-screen','home');
 });
 test('lights distinguish click from swipe, audio changes tracks',async({page})=>{
