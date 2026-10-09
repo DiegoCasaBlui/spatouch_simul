@@ -1,6 +1,6 @@
 # SpaTouch 4 · Simulador Rev. A
 
-Aplicación local basada exclusivamente en **SPA-TOUCH-4-user-guide-English.pdf**, documento **42410 Rev. A**, **MVP Release**. El PDF original se conserva sin modificaciones.
+Aplicación local basada en **SPA-TOUCH-4-user-guide-English.pdf**, documento **42410 Rev. A**, **MVP Release**. El PDF original se conserva sin modificaciones. El mock-up Wi-Fi / CMS se añadió a partir de las cinco capturas adicionales suministradas por el usuario.
 
 ## Ejecutar
 
@@ -35,23 +35,31 @@ La pantalla conserva las coordenadas **800 × 480** de las capturas y se escala 
 - En los selectores de hora y suspensión, arrastrar las columnas. ✓ guarda y × cancela. Salir del editor también descarta el borrador.
 - Al suspenderse la pantalla, tocarla y pulsar **1, luego 2**. Con `Tap to Wake` activado se despierta con un toque.
 
-La interfaz inicia en inglés. `Settings → General → Language` permite elegir español. Los rótulos abreviados R y R girada 90°, L/H y F°/C° conservan la presentación del manual.
+La interfaz inicia en inglés. `Settings → General → Language` permite elegir español. Los rótulos abreviados R e IR girada 90°, L/H y F°/C° conservan la presentación del manual.
+
+## Mock-up Wi-Fi / CMS
+
+Tocar el icono Wi-Fi de Home o abrir **Settings → Connections**. Elegir **Spa Home**, **Garden WiFi** o **Guest Network**, tocar **Control My Spa** y confirmar con ✓. La cruz vuelve al listado.
+
+En **CMS**, tocar el campo debajo de **CMS:** para abrir el teclado. Admite letras, números y guiones (hasta 24 caracteres), mayúsculas, borrado y teclado físico. ✓ o Enter finaliza y muestra el QR; ×, Escape o Back cancela el borrador. Back desde el QR permite editar de nuevo.
+
+El SN ficticio es `DEMO-42410-0001`. El QR codifica texto JSON de demostración con ese SN y el código ingresado; no contiene un enlace ni registra el spa en Control My Spa. Red y registro se conservan durante la sesión y se reinician al recargar. La pantalla reproduce la instrucción de escaneo de la referencia; el alcance de simulación se explica fuera del panel.
 
 ## Simulación
 
 El desplegable **Simulation**, fuera del panel, permite pausar, acelerar 1×/10×/60×, avanzar tiempo, modificar el agua, configurar accesorios, iniciar/finalizar Priming, cambiar la conexión ficticia, despertar, quitar bloqueos o restablecer.
 
-- Perfil inicial: dos bombas de una velocidad, circulación, bba 3, Chromazone, Clim8zone, ozono y M8 disponibles.
+- Perfil inicial: dos bombas de una velocidad, circulación, luces, Chromazone, Clim8zone, ozono y M8 disponibles.
 - Inicio a las 12:00, agua a 90 °F y consigna a 100 °F. La hora inicialmente no está confirmada: aparece el mensaje 40 hasta guardarla. Los horarios automáticos quedan pendientes de ese paso.
 - Al arrancar se muestra `----` hasta completar 60 segundos continuos de circulación. Una lectura sin renovar caduca a los 60 minutos. El control de circulación es informativo salvo durante Priming.
 - Ready calienta según demanda. Rest calienta únicamente durante filtración. High y Low usan los límites publicados por el manual; cambiar unidades conserva la temperatura física y cambiar rango limita la consigna cuando hace falta.
 - Los horarios atraviesan medianoche y se evalúan incluso al avanzar una hora de golpe. Inicio igual a fin significa un ciclo de 24 horas. Los ciclos de filtración solapados muestran ambos indicadores.
 - La suspensión mide **inactividad real**, independiente del reloj simulado. Las bombas y el calentamiento siguen funcionando mientras la pantalla está dormida.
-- Los ajustes y la hora se guardan en `localStorage`, sin cuentas ni servicios externos. Al recargar, se reinician bombas manuales, conexiones, música, Priming, actualización y lecturas; no se calcula el tiempo transcurrido con la web cerrada.
+- Los ajustes y la hora se guardan en `localStorage`, sin cuentas ni servicios externos. Al recargar, se reinician bombas manuales, conexiones, registro CMS, Priming, actualización y lecturas; no se calcula el tiempo transcurrido con la web cerrada.
 
 ## Fidelidad y aproximaciones
 
-La sección **Reference and scope** contiene la matriz completa por función y página. No se utilizaron pantallas ni documentación de otras revisiones.
+La sección **Reference and scope** contiene la matriz completa por función y página. La base mantiene la revisión del PDF; el flujo Wi-Fi / CMS es un mock-up separado basado en las capturas adicionales, sin atribuirlo a pantallas documentadas por el manual.
 
 Las pantallas documentadas se reconstruyen con HTML, CSS y SVG. La textura procede de una zona sin controles de una captura de la página 6 del PDF. Las tipografías e iconos son aproximaciones visuales; no se ejecuta ni se incluye firmware Balboa.
 
@@ -67,7 +75,7 @@ El documento enumera funciones sin explicar sus pantallas. Por acuerdo, se imple
 | Hold | Pausa de 60 minutos que detiene salidas de bombas, blower y calentamiento. |
 | Cleanup Cycle | Duración de 0/15/30/60 min, inicio manual o 30 min después de apagar el último equipo manual. |
 | Security | Bloqueos independientes de panel y ajustes. La secuencia demo 1 → 2 desbloquea; no se afirma que sea el método de seguridad real. |
-| Connections | Offline, Local o Cloud, sin enlaces Bluetooth, red del spa ni servicios de Balboa. |
+| Connections / CMS | Tres redes ficticias, confirmación de registro, teclado y QR generado localmente. Seleccionar red activa Local; finalizar el código activa Cloud. No hay conexión ni registro real. |
 | Diagnostics | Lecturas del motor; voltaje de 120 V y datos de software ilustrativos. |
 | Software Update | Progreso ficticio de 10 segundos del reloj simulado; no descarga firmware ni cambia la revisión de referencia. |
 | Idioma y recordatorios | Traducción propia al español y recordatorio de demostración; no representan un catálogo oficial de idiomas ni intervalos de mantenimiento. |
@@ -77,8 +85,9 @@ El documento enumera funciones sin explicar sus pantallas. Por acuerdo, se imple
 - `src/model.ts`: tipos, límites, horarios, motor puro, acciones y persistencia versionada.
 - `src/App.tsx`: navegación, reloj de ejecución, suspensión, bloqueos y composición.
 - `src/Screens.tsx`, `src/Dial.tsx`, `src/ui.tsx`, `src/icons.tsx`: controles y pantallas.
+- `src/Connections.tsx` y `src/connections.css`: flujo Wi-Fi, teclado y QR CMS.
 - `src/gestures.tsx`: captura del puntero, separación entre clic/arrastre y coordenadas invertidas.
 - `src/SimulatorTools.tsx`: controles de escenarios y matriz de cobertura.
-- `src/model.test.ts` y `tests/simulator.spec.ts`: pruebas de lógica y recorridos de usuario.
+- `src/model.test.ts` y `tests/simulator.spec.ts` y `tests/connections.spec.ts`: pruebas de lógica y recorridos de usuario.
 
 No hay backend, autenticación, telemetría, conexión a hardware ni publicación automática. Todos los recursos de la aplicación se sirven localmente.

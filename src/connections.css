@@ -1,0 +1,17 @@
+.connections-content{position:absolute;left:115px;right:85px;top:82px;bottom:24px;color:#a6d9eb;font-size:25px}
+.wifi-networks{display:flex;flex-direction:column;gap:10px;margin:12px 30px 24px}
+.panel .wifi-network{justify-content:flex-start;text-align:left;gap:22px;width:100%;min-height:64px;padding:8px 18px;border:1px solid transparent;border-radius:7px;color:#a6d9eb;font-size:27px}
+.wifi-network span{flex:1}.panel .wifi-network.selected{background:#175f7977;border-color:#3094b2;color:#e1f6ff}
+.panel .wifi-network:hover{background:#175f7944}
+.panel .cms-connect{display:flex;margin:0 auto;background:#267f9e;border:1px solid #369dbc;border-radius:7px;padding:11px 30px;font-size:25px;color:#d9f4ff}
+.cms-confirmation{padding-top:64px;text-align:center}.cms-confirmation p{font-size:26px;margin:0 0 60px;white-space:nowrap}
+.cms-actions{display:flex;justify-content:center;gap:140px}.cms-actions .round-button{width:68px;height:68px}
+.cms-code-form{width:440px;margin:4px auto;text-align:left}.cms-code-form>p:first-child{margin:0 0 18px;font-size:24px}.cms-code-form label{display:block;margin-bottom:8px}
+.panel .cms-code-field{display:flex;justify-content:flex-start;width:100%;min-height:51px;border:1px solid #3989a2;border-radius:4px;background:#08263580;padding:7px 12px;color:#d9f5ff;font-size:27px;overflow-wrap:anywhere;text-align:left}
+.cms-placeholder{color:#6da1b5;font-size:23px}.cms-instructions{font-size:22px;line-height:1.4;margin:28px 0 22px}.cms-code-form>.round-button{display:flex;margin-left:auto;width:59px;height:59px}
+.cms-keyboard-screen{position:absolute;inset:-12px -35px 0 -10px}
+.cms-keyboard-input{display:block;width:100%;height:56px;border:0;border-bottom:1px solid #337b98;background:#001d2a66;color:#def5ff;font-size:30px;padding:8px 14px;letter-spacing:1px;outline-offset:0!important;border-radius:0;caret-color:#dff6ff}
+.cms-keyboard{margin-top:15px;display:flex;flex-direction:column;gap:10px}.cms-key-row{display:flex;justify-content:center;gap:6px;min-height:53px}
+.panel .cms-key-row button{width:50px;height:53px;border-radius:4px;font-size:34px;color:#4db2d7;background:#07354b55}.panel .cms-key-row button:hover{background:#206785}.panel .cms-key-row button:active,.panel .cms-key-row button[aria-pressed=true]{background:#3188a6;color:#d8f3ff}
+.panel .cms-key-row .cms-key-wide{width:70px;font-size:23px}.cms-key-bottom{justify-content:space-between;margin-top:4px}.panel .cms-key-row .cms-key-done{background:#2386aa;width:100px;color:#e2f9ff}
+.cms-result{display:flex;align-items:center;flex-direction:column;margin-top:-1px;font-size:23px}.cms-result-details{width:380px;max-width:100%;margin-bottom:14px;text-align:center}.cms-result-details p{margin:0 0 5px;overflow-wrap:anywhere;font-size:23px}.cms-result>svg{display:block;flex-shrink:0;background:white}.cms-scan-instructions{margin:14px 0 0;text-align:center;line-height:1.3;font-size:24px}

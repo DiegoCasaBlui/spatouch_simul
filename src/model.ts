@@ -19,6 +19,7 @@ export type SpaState = {
   startup: boolean; sampleSeconds: number; lastSample: number | null; sampledC: number | null;
   holdUntil: number; cleanupUntil: number; cleanupDue: number | null;
   connection: 'Offline' | 'Local' | 'Cloud';
+  wifiNetwork: string | null; cmsCode: string;
   updating: number; updateInstalled: boolean; reminderDismissed: boolean;
 };
 export const STORAGE_KEY = 'spatouch4-rev-a-v1';
@@ -50,7 +51,7 @@ export function initialState(settings = defaults(), clock = 12 * 3600): SpaState
   return { settings: normalizeSettings(settings), clock, waterC: toC(90, 'F'), ambientC: 22, manualPumps: [0, 0], blowerOn: false,
     primeCirculation: false, priming: false, startup: true, sampleSeconds: 0, lastSample: null, sampledC: null,
     holdUntil: 0, cleanupUntil: 0, cleanupDue: null,
-    connection: 'Offline', updating: 0, updateInstalled: false, reminderDismissed: false };
+    connection: 'Offline', wifiNetwork: null, cmsCode: '', updating: 0, updateInstalled: false, reminderDismissed: false };
 }
 export function inCycle(c: Cycle, seconds: number): boolean {
   if (!c.enabled) return false;
